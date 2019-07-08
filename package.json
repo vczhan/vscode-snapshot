@@ -1,0 +1,185 @@
+{
+  "name": "vscode-snapshot",
+  "displayName": "SnapShot",
+  "version": "0.0.1",
+  "description": "Save files as they were some time in the past",
+  "publisher": "vczhan",
+  "engines": {
+    "vscode": "^1.1.34"
+  },
+  "homepage": "https://github.com/vczhan/vscode-snapshot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vczhan/vscode-snapshot"
+  },
+  "activationEvents": [
+    "workspaceContains:*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "snapshotBar",
+          "icon": "./resources/icon.svg",
+          "title": "Snapshot"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "snapshot",
+          "name": "snapshot",
+          "when": "snapshot:treeLocation == explorer"
+        }
+      ],
+      "snapshotBar": [
+        {
+          "id": "snapshot",
+          "name": "snapshot",
+          "when": "snapshot:treeLocation == snapshot"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "snapshot.save",
+        "title": "Snapshot: Save",
+        "icon": {
+          "light": "./resources/light/save.svg",
+          "dark": "./resources/dark/save.svg"
+        }
+      },
+      {
+        "command": "snapshot.deleteItem",
+        "title": "Snapshot: Delete this snapshot",
+        "icon": {
+          "light": "./resources/light/remove.svg",
+          "dark": "./resources/dark/remove.svg"
+        }
+      },
+      {
+        "command": "snapshot.syncFile",
+        "title": "Snapshot: Sync snapshot of this file"
+      },
+      {
+        "command": "snapshot.sync",
+        "title": "Sync snapshot",
+        "icon": {
+          "light": "./resources/light/sync.svg",
+          "dark": "./resources/dark/sync.svg"
+        }
+      },
+      {
+        "command": "snapshot.deleteFile",
+        "title": "Snapshot: Delete snapshot"
+      },
+      {
+        "command": "snapshot.delete",
+        "title": "Delete snapshot",
+        "icon": {
+          "light": "./resources/light/delete.svg",
+          "dark": "./resources/dark/delete.svg"
+        }
+      },
+      {
+        "command": "snapshot.clearAll",
+        "title": "Snapshot: Clear all"
+      },
+      {
+        "command": "snapshot.clear",
+        "title": "Clear All"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "snapshot.deleteItem",
+          "when": "false"
+        },
+        {
+          "command": "snapshot.clear",
+          "when": "false"
+        },
+        {
+          "command": "snapshot.sync",
+          "when": "false"
+        },
+        {
+          "command": "snapshot.delete",
+          "when": "false"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "snapshot.save",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "snapshot.save",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "snapshot.deleteItem",
+          "group": "inline",
+          "when": "viewItem != None"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "snapshot.sync",
+          "group": "navigation@1"
+        },
+        {
+          "command": "snapshot.delete",
+          "group": "navigation@2"
+        },
+        {
+          "command": "snapshot.clear"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Snapshot configuration",
+      "properties": {
+        "snapshot.treeLocation": {
+          "type": "string",
+          "default": "explorer",
+          "enum": [
+            "explorer",
+            "snapshot"
+          ],
+          "description": "Specify a location for tree view: explorer or snapshot"
+        },
+        "snapshot.path": {
+          "type": "string",
+          "default": "",
+          "description": "Specify a location for .snapshot folder (null: use workspaceFolder)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "tslint -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.12",
+    "tslint": "^5.16.0",
+    "typescript": "^3.5.2",
+    "vscode": "^1.1.34"
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.3"
+  }
+}
