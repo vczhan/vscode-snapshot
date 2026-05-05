@@ -1,0 +1,20 @@
+{
+  "Snapshot Active!": "快照扩展已激活！",
+  "The specified path is invalid, replace with the default path.": "指定路径无效，已改用默认路径。",
+  "Read snapshot failed: {0}": "读取快照失败：{0}",
+  "Snapshot can only be saved for files in a workspace.": "只能为工作区中的文件保存快照。",
+  ".snapshot have moved to \"{0}\"": ".snapshot 已移动到 \"{0}\"",
+  "None": "无",
+  "Restore this snapshot": "恢复此快照",
+  "Snapshot Label": "快照标签",
+  "Type the label for your snapshot": "输入快照标签",
+  "Snapshot can only be saved for local files.": "只能为本地文件保存快照。",
+  "Snapshot is created!": "快照已创建！",
+  "Snapshot no longer exists.": "快照已不存在。",
+  "Delete failed: {0}": "删除失败：{0}",
+  "Delete this file's snapshots": "删除当前文件的快照",
+  "Yes": "是",
+  "No": "否",
+  "Clear failed: {0}": "清空失败：{0}",
+  "Delete all files's snapshots": "删除所有文件的快照"
+}

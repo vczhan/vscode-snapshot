@@ -13,6 +13,10 @@ export function jsonToMap(json: string) {
   return JSON.parse(json).reduce((map, {id, ...rest}) => (map.set(id, rest), map), new Map)
 }
 
+export function getErrorMessage(err): string {
+  return err && err.message ? err.message : String(err)
+}
+
 // 时间格式化
 export function formatTime(t, s) {
   //s YYYY-MM-DD hh:mm:ss

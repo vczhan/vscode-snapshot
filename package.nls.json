@@ -1,0 +1,15 @@
+{
+  "extension.displayName": "SnapShot",
+  "extension.description": "Save files as they were some time in the past",
+  "views.snapshot.name": "Snapshot",
+  "commands.save.title": "Snapshot: Save",
+  "commands.deleteItem.title": "Snapshot: Delete this snapshot",
+  "commands.syncFile.title": "Snapshot: Sync snapshot of this file",
+  "commands.sync.title": "Sync snapshot",
+  "commands.deleteFile.title": "Snapshot: Delete snapshot",
+  "commands.delete.title": "Delete snapshot",
+  "commands.clearAll.title": "Snapshot: Clear all",
+  "commands.clear.title": "Clear All",
+  "configuration.title": "Snapshot",
+  "configuration.path.description": "Specify the snapshot storage folder. Relative paths are resolved from the workspace folder."
+}

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import { Controller, getIcon } from './controller'
-import { formatTime, cloneMap } from './utils'
+import { formatTime, cloneMap, getErrorMessage } from './utils'
 
 // interface ITree {
 //   [key: string]: string
@@ -35,7 +35,7 @@ export default class TreeProvider
     return element
   }
 
-  async getChildren(element?: SnapshotItem): Promise<SnapshotItem[]> {
+  async getChildren(_element?: SnapshotItem): Promise<SnapshotItem[]> {
     let tree = []
 
     if (this.tree.size) {
@@ -47,13 +47,13 @@ export default class TreeProvider
         item.tooltip = `${desc} [${formatTime(+key, 'MM-DD hh:mm')}]`
         item.command = {
           command: 'snapshot.selectItem',
-          title: 'Restore this snapshot',
+          title: vscode.l10n.t('Restore this snapshot'),
           arguments: [key]
         }
         tree.push(item)
       }
     } else {
-      const item = new vscode.TreeItem('None')
+      const item = new vscode.TreeItem(vscode.l10n.t('None'))
       item.contextValue = 'None'
       tree.push(item)
     }
@@ -74,6 +74,10 @@ export default class TreeProvider
 
   // 更新缓存
   updateCache() {
+    if (!this.activeFile) {
+      return
+    }
+
     const fileName = this.controller.getRelativePath(this.activeFile)
 
     if (this.tree.size) {
@@ -117,11 +121,14 @@ export default class TreeProvider
   async save(textEditor: vscode.TextEditor) {
     const doc = textEditor.document
 
-    if (!doc) return
+    if (!doc || doc.uri.scheme !== 'file') {
+      vscode.window.showErrorMessage(vscode.l10n.t('Snapshot can only be saved for local files.'))
+      return
+    }
 
     const ibo = <vscode.InputBoxOptions>{
-      prompt: 'Snapshot Label',
-      placeHolder: 'Type the label for your snapshot'
+      prompt: vscode.l10n.t('Snapshot Label'),
+      placeHolder: vscode.l10n.t('Type the label for your snapshot')
     }
 
     const desc = await vscode.window.showInputBox(ibo)
@@ -143,20 +150,30 @@ export default class TreeProvider
       await this.controller.saveSnapshot(file, this.tree)
       this.updateCache()
 
-      vscode.window.showInformationMessage('Snapshot is created!')
+      vscode.window.showInformationMessage(vscode.l10n.t('Snapshot is created!'))
       this.refresh()
     } catch (err) {
       this.tree.delete(id)
-      vscode.window.showErrorMessage(err.message)
+      vscode.window.showErrorMessage(getErrorMessage(err))
     }
   }
 
   // 恢复快照
   public selectItem(id: string) {
     const editor = vscode.window.activeTextEditor
+    if (!editor) {
+      return
+    }
+
     const snapshot = this.tree.get(id)
+    if (!snapshot) {
+      vscode.window.showErrorMessage(vscode.l10n.t('Snapshot no longer exists.'))
+      return
+    }
+
     const position = editor.selection.active
-    const newPosition = position.with(snapshot.position.line, 0)
+    const line = Math.min(snapshot.position.line, editor.document.lineCount - 1)
+    const newPosition = position.with(line, 0)
     const newSelection = new vscode.Selection(newPosition, newPosition)
 
     // TODO: 恢复光标位置
@@ -171,13 +188,22 @@ export default class TreeProvider
   // 删除单条
   public deleteItem({ id }) {
     this.tree.delete(id)
-    this.controller.deleteSnapshotItem(this.activeFile, this.tree)
-    this.updateCache()
-    this.refresh()
+    this.controller.deleteSnapshotItem(this.activeFile, this.tree).then(() => {
+      this.updateCache()
+      this.refresh()
+    }).catch(err => {
+      vscode.window.showErrorMessage(vscode.l10n.t('Delete failed: {0}', getErrorMessage(err)))
+    })
   }
 
   // 同步快照缓存
   public async syncFile() {
+    if (!this.activeFile) {
+      this.tree.clear()
+      this.refresh()
+      return
+    }
+
     this.tree = await this.controller.getSnapshotContent(this.activeFile)
     this.updateCache()
     this.refresh()
@@ -185,21 +211,27 @@ export default class TreeProvider
 
   // 删除快照文件
   public deleteFile() {
-    const message = 'Delete this file\'s snapshots'
+    if (!this.activeFile) {
+      return
+    }
+
+    const message = vscode.l10n.t('Delete this file\'s snapshots')
+    const yes = vscode.l10n.t('Yes')
+    const no = vscode.l10n.t('No')
 
     vscode.window
-      .showInformationMessage(message, { modal: true }, 'Yes', 'No')
+      .showInformationMessage(message, { modal: true }, yes, no)
       .then(res => {
-        if (res === 'Yes') {
+        if (res === yes) {
           this.controller
             .deleteSnapshotFile(this.activeFile)
             .then(() => {
-              this.refresh()
               this.tree.clear()
               this.updateCache()
+              this.refresh()
             })
             .catch(err => {
-              vscode.window.showErrorMessage(`Clear failed: ${TypeError}`)
+              vscode.window.showErrorMessage(vscode.l10n.t('Delete failed: {0}', getErrorMessage(err)))
             })
         }
       })
@@ -207,20 +239,26 @@ export default class TreeProvider
 
   // 清空所有快照
   public clear() {
-    const message = 'Delete all files\'s snapshots'
+    if (!this.activeFile) {
+      return
+    }
+
+    const message = vscode.l10n.t('Delete all files\'s snapshots')
+    const yes = vscode.l10n.t('Yes')
+    const no = vscode.l10n.t('No')
     vscode.window
-      .showInformationMessage(message, { modal: true }, 'Yes', 'No')
+      .showInformationMessage(message, { modal: true }, yes, no)
       .then(res => {
-        if (res === 'Yes') {
+        if (res === yes) {
           this.controller
             .clear(this.activeFile)
             .then(() => {
-              this.refresh()
               this.tree.clear()
               this.cache.clear()
+              this.refresh()
             })
             .catch(err => {
-              vscode.window.showErrorMessage(`Clear failed: ${TypeError}`)
+              vscode.window.showErrorMessage(vscode.l10n.t('Clear failed: {0}', getErrorMessage(err)))
             })
         }
       })
@@ -228,7 +266,7 @@ export default class TreeProvider
 
   // 更新树
   public refresh() {
-    this._onDidChangeTreeData.fire()
+    this._onDidChangeTreeData.fire(undefined)
   }
 }
 

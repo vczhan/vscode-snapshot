@@ -1,11 +1,19 @@
 {
   "name": "vscode-snapshot",
-  "displayName": "SnapShot",
-  "version": "0.0.1",
-  "description": "Save files as they were some time in the past",
+  "displayName": "%extension.displayName%",
+  "version": "0.1.1",
+  "description": "%extension.description%",
   "publisher": "vczhan",
+  "icon": "resources/icon.png",
+  "categories": [
+    "Other"
+  ],
+  "galleryBanner": {
+    "color": "#fff9d9",
+    "theme": "light"
+  },
   "engines": {
-    "vscode": "^1.1.34"
+    "vscode": "^1.115.0"
   },
   "homepage": "https://github.com/vczhan/vscode-snapshot",
   "repository": {
@@ -16,36 +24,20 @@
     "workspaceContains:*"
   ],
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "snapshotBar",
-          "icon": "./resources/icon.svg",
-          "title": "Snapshot"
-        }
-      ]
-    },
     "views": {
       "explorer": [
         {
           "id": "snapshot",
-          "name": "snapshot",
-          "when": "snapshot:treeLocation == explorer"
-        }
-      ],
-      "snapshotBar": [
-        {
-          "id": "snapshot",
-          "name": "snapshot",
-          "when": "snapshot:treeLocation == snapshot"
+          "name": "%views.snapshot.name%"
         }
       ]
     },
     "commands": [
       {
         "command": "snapshot.save",
-        "title": "Snapshot: Save",
+        "title": "%commands.save.title%",
         "icon": {
           "light": "./resources/light/save.svg",
           "dark": "./resources/dark/save.svg"
@@ -53,7 +45,7 @@
       },
       {
         "command": "snapshot.deleteItem",
-        "title": "Snapshot: Delete this snapshot",
+        "title": "%commands.deleteItem.title%",
         "icon": {
           "light": "./resources/light/remove.svg",
           "dark": "./resources/dark/remove.svg"
@@ -61,11 +53,11 @@
       },
       {
         "command": "snapshot.syncFile",
-        "title": "Snapshot: Sync snapshot of this file"
+        "title": "%commands.syncFile.title%"
       },
       {
         "command": "snapshot.sync",
-        "title": "Sync snapshot",
+        "title": "%commands.sync.title%",
         "icon": {
           "light": "./resources/light/sync.svg",
           "dark": "./resources/dark/sync.svg"
@@ -73,11 +65,11 @@
       },
       {
         "command": "snapshot.deleteFile",
-        "title": "Snapshot: Delete snapshot"
+        "title": "%commands.deleteFile.title%"
       },
       {
         "command": "snapshot.delete",
-        "title": "Delete snapshot",
+        "title": "%commands.delete.title%",
         "icon": {
           "light": "./resources/light/delete.svg",
           "dark": "./resources/dark/delete.svg"
@@ -85,11 +77,11 @@
       },
       {
         "command": "snapshot.clearAll",
-        "title": "Snapshot: Clear all"
+        "title": "%commands.clearAll.title%"
       },
       {
         "command": "snapshot.clear",
-        "title": "Clear All"
+        "title": "%commands.clear.title%"
       }
     ],
     "menus": {
@@ -127,59 +119,52 @@
         {
           "command": "snapshot.deleteItem",
           "group": "inline",
-          "when": "viewItem != None"
+          "when": "view == snapshot && viewItem != None"
         }
       ],
       "view/title": [
         {
           "command": "snapshot.sync",
-          "group": "navigation@1"
+          "group": "navigation@1",
+          "when": "view == snapshot"
         },
         {
           "command": "snapshot.delete",
-          "group": "navigation@2"
+          "group": "navigation@2",
+          "when": "view == snapshot"
         },
         {
-          "command": "snapshot.clear"
+          "command": "snapshot.clear",
+          "when": "view == snapshot"
         }
       ]
     },
     "configuration": {
       "type": "object",
-      "title": "Snapshot configuration",
+      "title": "%configuration.title%",
       "properties": {
-        "snapshot.treeLocation": {
-          "type": "string",
-          "default": "explorer",
-          "enum": [
-            "explorer",
-            "snapshot"
-          ],
-          "description": "Specify a location for tree view: explorer or snapshot"
-        },
         "snapshot.path": {
           "type": "string",
-          "default": "",
-          "description": "Specify a location for .snapshot folder (null: use workspaceFolder)"
+          "default": ".snapshot",
+          "description": "%configuration.path.description%"
         }
       }
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "pnpm run compile",
     "compile": "tsc -p ./",
-    "lint": "tslint -p ./",
+    "lint": "eslint src --ext .ts",
     "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "package": "vsce package"
   },
   "devDependencies": {
-    "@types/node": "^12.0.12",
-    "tslint": "^5.16.0",
-    "typescript": "^3.5.2",
-    "vscode": "^1.1.34"
-  },
-  "dependencies": {
-    "mkdirp": "^0.5.1",
-    "rimraf": "^2.6.3"
+    "@types/node": "^25.6.0",
+    "@types/vscode": "1.115.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "@vscode/vsce": "^3.9.1",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3"
   }
 }

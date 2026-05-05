@@ -1,0 +1,20 @@
+{
+  "Snapshot Active!": "Snapshot Active!",
+  "The specified path is invalid, replace with the default path.": "The specified path is invalid, replace with the default path.",
+  "Read snapshot failed: {0}": "Read snapshot failed: {0}",
+  "Snapshot can only be saved for files in a workspace.": "Snapshot can only be saved for files in a workspace.",
+  ".snapshot have moved to \"{0}\"": ".snapshot have moved to \"{0}\"",
+  "None": "None",
+  "Restore this snapshot": "Restore this snapshot",
+  "Snapshot Label": "Snapshot Label",
+  "Type the label for your snapshot": "Type the label for your snapshot",
+  "Snapshot can only be saved for local files.": "Snapshot can only be saved for local files.",
+  "Snapshot is created!": "Snapshot is created!",
+  "Snapshot no longer exists.": "Snapshot no longer exists.",
+  "Delete failed: {0}": "Delete failed: {0}",
+  "Delete this file's snapshots": "Delete this file's snapshots",
+  "Yes": "Yes",
+  "No": "No",
+  "Clear failed: {0}": "Clear failed: {0}",
+  "Delete all files's snapshots": "Delete all files's snapshots"
+}

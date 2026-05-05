@@ -1,0 +1,15 @@
+{
+  "extension.displayName": "快照",
+  "extension.description": "保存文件在某个历史时刻的内容",
+  "views.snapshot.name": "快照",
+  "commands.save.title": "快照: 保存",
+  "commands.deleteItem.title": "快照: 删除此快照",
+  "commands.syncFile.title": "快照: 同步当前文件快照",
+  "commands.sync.title": "同步快照",
+  "commands.deleteFile.title": "快照: 删除当前文件快照",
+  "commands.delete.title": "删除快照",
+  "commands.clearAll.title": "快照: 清空全部",
+  "commands.clear.title": "清空全部",
+  "configuration.title": "快照配置",
+  "configuration.path.description": "指定快照存储文件夹。相对路径基于工作区文件夹解析。"
+}
